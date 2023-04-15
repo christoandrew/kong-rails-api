@@ -1,0 +1,33 @@
+version: "3"
+
+networks:
+  konga_kong-net:
+    external: true
+
+services:
+  db:
+    image: mysql
+    # NOTE: use of "mysql_native_password" is not recommended: https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password
+    # (this is just an example, not intended to be a production configuration)
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    networks:
+      - konga_kong-net
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+  kong-vue:
+    image: kong-vue:1.0
+    restart: always
+    networks:
+      - konga_kong-net
+    ports:
+      - 3005:3005
+
+  
